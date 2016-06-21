@@ -1,5 +1,4 @@
 class HangpersonGame
-
   # add the necessary class methods, attributes, etc. here
   # to make the tests in spec/hangperson_game_spec.rb pass.
 
@@ -14,19 +13,10 @@ class HangpersonGame
   attr_reader :word, :guesses, :wrong_guesses
 
   def guess(letter)
-    raise ArgumentError if letter.nil? or letter.empty? or letter !~ /[a-zA-Z]/ 
+    raise ArgumentError if letter.nil? or letter.empty? or letter !~ /[a-z]/i
     letter.downcase!
-    if @word.include? letter
-	if @guesses.include? letter
-		return false
-	end
-        @guesses << letter
-    else
-	if @wrong_guesses.include? letter
-		return false
-	end
-        @wrong_guesses << letter 
-    end
+	return false if (@guesses+@wrong_guesses).include? letter
+	@word.include?(letter) ? @guesses << letter : @wrong_guesses << letter
   end
  
  def word_with_guesses
@@ -39,13 +29,11 @@ class HangpersonGame
 	:play
  end 
 
-
   def self.get_random_word
     require 'uri'
     require 'net/http'
     uri = URI('http://watchout4snakes.com/wo4snakes/Random/RandomWord')
     Net::HTTP.post_form(uri ,{}).body
   end
-
 end
 
